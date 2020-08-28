@@ -13,18 +13,24 @@ J = 0;
 grad = zeros(size(theta));
 
 z = X * theta;
-hx = sigmoid(z);
-y1 = -1 * y .* log(hx);
-oneMatrix = ones(m, 1);
-y2 = (oneMatrix - y) .* log(oneMatrix - hx);
+hx = sigmoid(z); %hypothesis
+y1 = -1 * y .* log(hx); %first part of cost function
 
+oneMatrix = ones(m, 1);
+y2 = (oneMatrix - y) .* log(oneMatrix - hx); %second part of cost function
+
+%Regularization will only be apply when j > 0. When j = 0, don't add to sum
 reg_theta = theta(2:n, :)
 reg = (lambda / (2 * m)) * sum((reg_theta .^ 2))
+%Cost function
 J = (1 / m) * sum((y1 - y2)) + reg
 
+%Init grad with formular of j = 0, after that, modify for j > 0 (mean theta > 1)
 grad = (1 / m) * X' * (hx - y)
 
+%Reg for j > 0 (theta > 1)
 reg_grad = (lambda / m) * reg_theta
+%Re-Compute for grad(2:length(grad))
 grad(2:length(grad)) = grad(2:length(grad)) + reg_grad;
 
 
