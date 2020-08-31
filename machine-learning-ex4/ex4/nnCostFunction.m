@@ -30,6 +30,49 @@ J = 0;
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
 
+X = [ones(m, 1) X];
+z2 = X * Theta1';
+a2 = sigmoid(z2);
+
+n = size(a2, 1);
+a2 = [ones(n, 1) a2];
+z3 = a2 * Theta2';
+
+hx = sigmoid(z3);
+
+%Turn y to binary metrix
+yBinary = (y==1);
+for c = 2:num_labels
+    yBinary = [yBinary (y == c)];
+end
+
+y1 = -1 .* yBinary .* log(hx); %first part of cost function
+y2 = (ones(size(yBinary, 1), 1) - yBinary) .* log(1 - hx); %second part of cost function
+%Cost function
+J = (1 / m) * (sum(sum((y1 - y2))));
+
+%Calculate regularization
+reg_1 = sum(sum(Theta1(:, 2:end) .^ 2));
+reg_2 = sum(sum(Theta2(:, 2:end) .^ 2));
+
+reg = (lambda / (2 * m)) * (reg_1 + reg_2);
+
+J = J + reg;
+
+delta_3 = hx - yBinary;
+
+sum_delta_2 = delta_3' * a2;
+sum_delta_1 = zeros(size(Theta1));
+
+for i = 1:m
+    temp = Theta2' * delta_3(i, :)'
+    delta_2 = temp(2:end) .* sigmoidGradient(z2(i, :)');
+    sum_delta_1 = sum_delta_1 + delta_2 * X(i, :);
+end
+
+Theta1_grad = (sum_delta_1 ./ m) + ([ zeros(hidden_layer_size, 1) Theta1(:,2:end)]) .* (lambda/m);
+Theta2_grad = (sum_delta_2 ./ m) + ([ zeros(num_labels, 1) Theta2(:,2:end)]) .* (lambda/m);
+
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
 %               following parts.
