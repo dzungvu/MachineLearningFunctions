@@ -8,6 +8,12 @@ m = length(y); % number of training examples
 J_history = zeros(num_iters, 1);
 
 for iter = 1:num_iters
+    predictions = X * theta;
+    delta = 1/m * X' * (predictions - y);
+    
+    theta = theta - alpha * delta;
+    
+    J_history(iter) = computeCost(X, y, theta)
 
     % ====================== YOUR CODE HERE ======================
     % Instructions: Perform a single gradient step on the parameter vector
