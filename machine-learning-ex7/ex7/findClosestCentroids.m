@@ -11,6 +11,25 @@ K = size(centroids, 1);
 % You need to return the following variables correctly.
 idx = zeros(size(X,1), 1);
 
+distances = zeros(size(X,1), 1);
+
+m = length(X);
+for i = 1:m
+   for j = 1:size(centroids, 1)
+       distance = sum((X(i, :) - centroids(j, :)) .^ 2);
+       if (j == 1)
+           idx(i) = j;
+           distances(i) = distance;
+       elseif (distance < distances(i))
+           distances(i) = distance;
+           idx(i) = j;
+       end
+       
+   end
+    
+end
+
+
 % ====================== YOUR CODE HERE ======================
 % Instructions: Go over every example, find its closest centroid, and store
 %               the index inside idx at the appropriate location.
